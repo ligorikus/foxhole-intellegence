@@ -6,5 +6,5 @@ import Map from './components/Map.vue'
   <Map />
 </template>
 
-<style scoped>
+<style>
 </style>

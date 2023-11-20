@@ -9,7 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.3.4"
+    "@svgdotjs/svg.js": "^3.2.0",
+    "pinia": "^2.1.7",
+    "rxjs": "^6.6.7",
+    "vue": "^3.3.7",
+    "vue-rx": "^6.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",

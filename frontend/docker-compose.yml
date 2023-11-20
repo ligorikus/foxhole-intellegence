@@ -8,5 +8,5 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./frontend/:/var/www/html/app
+      - ./:/var/www/html/app
     tty: true
