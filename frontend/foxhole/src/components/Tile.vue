@@ -16,24 +16,28 @@ const src = computed(() => {
 <template>
   <div
       class="map_container-tile"
-      :style="{top: top+'px', left: left+'px'}"
   >
     <img
         class="map_container-tile_image"
         alt=""
-        :src="src">
+        :src="src"
+        :style="{top: top+'px', left: left+'px', opacity: 1}"
+        >
   </div>
 </template>
 
 <style>
 .map_container-tile {
+}
+
+.map_container-tile img {
   width: 256px;
   height: 256px;
 
   position: absolute;
-}
 
-.map_container-tile img {
+  user-select: none;
+
   user-drag: none;
   -webkit-user-drag: none;
   user-select: none;

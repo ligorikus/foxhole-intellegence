@@ -160,13 +160,13 @@ export const useMap = defineStore('map', {
                 x: this.viewport.start.x + event.x,
                 y: this.viewport.start.y + event.y,
             }
-            if (event.deltaY > 0 && this.zoom < this.maxZoom) {
+            if (event.deltaY < 0 && this.zoom < this.maxZoom) {
                 this.zoom++;
                 this.center.x = -viewportPoint.x * 2;
                 this.center.y = -viewportPoint.y * 2;
             }
 
-            if (event.deltaY < 0 && this.zoom > 0) {
+            if (event.deltaY > 0 && this.zoom > 0) {
                 this.zoom--;
                 this.center.x = -viewportPoint.x / 2;
                 this.center.y = -viewportPoint.y / 2;

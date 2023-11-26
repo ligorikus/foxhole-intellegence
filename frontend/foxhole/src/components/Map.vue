@@ -4,9 +4,11 @@ import {onMounted, ref} from "vue";
 import {fromEvent, interval} from "rxjs";
 import {debounce} from "rxjs/operators";
 import {useMap} from "../store/map";
+import {useHexagon} from "../store/hexagon";
 import { SVG } from '@svgdotjs/svg.js'
 
 const map = useMap();
+const hexagon = useHexagon();
 const mapItems = ref(null)
 
 onMounted(() => {
@@ -22,6 +24,8 @@ onMounted(() => {
 
 
   const draw = SVG().addTo('.map_container-items_svg').size(window.innerWidth, window.innerHeight).stroke('#000')
+
+  
   const polygon = draw.polygon('0,0 100,0').fill('none').stroke({ width: 1 })
 
 });

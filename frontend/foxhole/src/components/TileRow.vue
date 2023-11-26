@@ -8,17 +8,10 @@ const map = useMap();
 </script>
 
 <template>
-  <div class="map-row">
-    <Tile
-        v-for="(item, index) in map.tileRange.x"
-        :key="index"
-        :column="column"
-        :row="item"
-    />
-  </div>
+  <Tile
+      v-for="(item, index) in map.tileRange.x"
+      :key="index"
+      :column="column"
+      :row="item"
+  />
 </template>
-
-<style>
-.map-row {
-}
-</style>
