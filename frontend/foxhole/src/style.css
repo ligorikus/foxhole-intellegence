@@ -1,15 +1,4 @@
 html, body {
     margin: 0;
     padding: 0;
-    display: flex;
-}
-
-#app {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
-    height: 100vh;
-    width: 100vw;
 }

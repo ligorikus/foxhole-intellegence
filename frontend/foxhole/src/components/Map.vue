@@ -5,29 +5,31 @@ import {fromEvent, interval} from "rxjs";
 import {debounce} from "rxjs/operators";
 import {useMap} from "../store/map";
 import {useHexagon} from "../store/hexagon";
-import { SVG } from '@svgdotjs/svg.js'
+import {useCanvas} from "../store/canvas";
 
 const map = useMap();
 const hexagon = useHexagon();
-const mapItems = ref(null)
+const canvas = useCanvas();
+
+const mapItems = ref(null);
+const mapItemsCanvas = ref(null);
 
 onMounted(() => {
-  map.updateSize();
 
+  hexagon.setContainer('#map_container-items_svg');
+  hexagon.setSize(map.size * 256);
+  hexagon.drawHexagonMap();
+
+  canvas.setContainer(mapItemsCanvas.value);
+
+  map.updateSize();
   fromEvent(window, 'resize').subscribe(map.updateSize)
   fromEvent(window, 'mouseup').subscribe(map.mouseUp)
-  fromEvent(mapItems.value, 'wheel')
+  fromEvent(mapItemsCanvas.value, 'wheel')
       .pipe(
           debounce(i => interval(50))
       )
       .subscribe(map.changeZoom);
-
-
-  const draw = SVG().addTo('.map_container-items_svg').size(window.innerWidth, window.innerHeight).stroke('#000')
-
-  
-  const polygon = draw.polygon('0,0 100,0').fill('none').stroke({ width: 1 })
-
 });
 </script>
 
@@ -43,8 +45,8 @@ onMounted(() => {
         :style="{top: map.centerMap.y+'px', left: map.centerMap.x+'px'}"
     >
       <div
-          class="map_container-items_svg"
-          :style="{top: map.svgStart.y+'px', left: map.svgStart.x+'px'}"
+        id="map_container-items_svg"
+        :style="{top: map.svgStart.y+'px', left: map.svgStart.x+'px'}"
       ></div>
       <TileRow
           v-for="(item, index) in map.tileRange.y"
@@ -52,6 +54,15 @@ onMounted(() => {
           :column="item"
       />
     </div>
+    <canvas
+      ref="mapItemsCanvas"
+      id='map_container-items_canvas'
+      :style="{
+        width: map.width+'px', 
+        height: map.height+'px',
+        cursor: map.drag ? 'grabbing' : 'inherit'
+      }"
+    ></canvas>
   </div>
 </template>
 
@@ -65,8 +76,15 @@ onMounted(() => {
   height: 100vh;
   z-index: 1;
 }
-.map_container-items_svg {
+#map_container-items_svg {
   position: absolute;
   z-index: 2;
+}
+#map_container-items_canvas {
+  inset: 0;
+  outline: none!important;
+  position: absolute;
+  z-index: 3;
+  touch-action: none;
 }
 </style>

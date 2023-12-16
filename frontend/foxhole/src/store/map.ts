@@ -1,5 +1,7 @@
 import {defineStore} from "pinia";
 import {State, Point, Viewport, PointRange} from "../types/map"
+import { useHexagon } from "./hexagon";
+import { useCanvas } from "./canvas";
 
 export const useMap = defineStore('map', {
     state: (): State => ({
@@ -131,17 +133,28 @@ export const useMap = defineStore('map', {
     },
     actions: {
         updateSize(): void {
-            this.width = window.innerWidth
-            this.height = window.innerHeight
+            
+            const canvas = useCanvas();
+            this.width = window.innerWidth;
+            this.height = window.innerHeight;
+
+            const ctx = canvas.container.getContext('2d');
+            ctx.canvas.width = this.width;
+            ctx.canvas.height = this.height;
         },
-        mouseDown(event): void {
-            this.drag = true;
-            this.startPosition = {
-                x: event.x,
-                y: event.y,
+        mouseDown(event: any): void {
+            if (event.button === 0) {
+                console.log(event);
+            }
+            if (event.button === 1) {
+                this.drag = true;
+                this.startPosition = {
+                    x: event.x,
+                    y: event.y,
+                }
             }
         },
-        mouseMove(event) {
+        mouseMove(event: any) {
             if (this.drag) {
                 this.center.x -= this.startPosition.x - event.x;
                 this.center.y -= this.startPosition.y - event.y;
@@ -156,6 +169,10 @@ export const useMap = defineStore('map', {
             this.drag = false;
         },
         changeZoom(event: WheelEvent): void {
+            const hexagon = useHexagon();
+            const canvas = useCanvas();
+
+            hexagon.clearHexagonMap();
             const viewportPoint = <Point>{
                 x: this.viewport.start.x + event.x,
                 y: this.viewport.start.y + event.y,
@@ -164,6 +181,17 @@ export const useMap = defineStore('map', {
                 this.zoom++;
                 this.center.x = -viewportPoint.x * 2;
                 this.center.y = -viewportPoint.y * 2;
+
+                if (this.zoom === 7) {
+                    const ctx = canvas.container.getContext('2d');
+                    const img = new Image();
+                    img.src =
+                      "https://raw.githubusercontent.com/brandon-ray/foxhole-facility-planner/master/public/games/foxhole/assets/game/Textures/Structures/ammunition_factory.webp";
+                    img.onload = () => {
+                        const w = img.width, h = img.height;
+                        ctx.drawImage(img, 0, 24, w, h);
+                    }
+                }
             }
 
             if (event.deltaY > 0 && this.zoom > 0) {
@@ -171,6 +199,9 @@ export const useMap = defineStore('map', {
                 this.center.x = -viewportPoint.x / 2;
                 this.center.y = -viewportPoint.y / 2;
             }
+
+            hexagon.setSize(this.size * 256);
+            hexagon.drawHexagonMap();
         },
     }
 });
